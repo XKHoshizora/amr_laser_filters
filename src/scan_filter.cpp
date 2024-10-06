@@ -7,9 +7,9 @@ class ScanFilter {
 public:
     ScanFilter() : nh_("~") {  // 构造函数，初始化私有节点句柄
         // 订阅原始激光扫描话题
-        scan_sub_ = nh_.subscribe("scan", 1, &ScanFilter::scanCallback, this);
+        scan_sub_ = nh_.subscribe("/scan", 1, &ScanFilter::scanCallback, this);
         // 发布过滤后的激光扫描话题
-        filtered_scan_pub_ = nh_.advertise<sensor_msgs::LaserScan>("scan_filtered", 1);
+        filtered_scan_pub_ = nh_.advertise<sensor_msgs::LaserScan>("/filtered_scan", 1);
 
         // 从参数服务器获取最小和最大范围参数，如果不存在则使用默认值
         nh_.param("min_range", min_range_, 0.05);
@@ -30,6 +30,8 @@ public:
 
     // 激光扫描回调函数
     void scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan_msg) {
+        ROS_INFO("Received scan with %zu points", scan_msg->ranges.size());
+        
         sensor_msgs::LaserScan filtered_scan = *scan_msg;  // 复制原始扫描消息
 
         // 遍历所有激光点
