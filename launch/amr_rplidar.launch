@@ -1,0 +1,13 @@
+<launch>
+    <!-- 启动原始的 RPLIDAR 节点 -->
+    <include file="$(find rplidar_ros)/launch/rplidar.launch" />
+
+    <!-- 启动我们的转换节点 -->
+    <node name="amr_rplidar_tf_lh2rh" pkg="amr_laser_filters" type="amr_rplidar" output="screen">
+        <param name="frame_id" value="laser"/>
+        <param name="invert_x" value="false"/>
+        <param name="angle_offset" value="0.0"/>
+        <remap from="/scan" to="/scan"/>
+        <remap from="/scan_converted" to="/scan_converted"/>
+    </node>
+</launch>
