@@ -26,19 +26,18 @@ public:
         // 更新 frame_id
         scan_out.header.frame_id = frame_id_;
 
+        // 添加 180 度（π 弧度）的补偿
+        double compensation = M_PI;
+
         // 调整角度范围和增量
-        scan_out.angle_min = -scan_in->angle_max + angle_offset_;
-        scan_out.angle_max = -scan_in->angle_min + angle_offset_;
+        scan_out.angle_min = -scan_in->angle_max + angle_offset_ + compensation;
+        scan_out.angle_max = -scan_in->angle_min + angle_offset_ + compensation;
         scan_out.angle_increment = -scan_in->angle_increment;
 
-        // 如果需要，翻转 X 轴
-        if (invert_x_)
-        {
-            std::reverse(scan_out.ranges.begin(), scan_out.ranges.end());
-            if (!scan_out.intensities.empty())
-            {
-                std::reverse(scan_out.intensities.begin(), scan_out.intensities.end());
-            }
+        // 反转数据数组
+        std::reverse(scan_out.ranges.begin(), scan_out.ranges.end());
+        if (!scan_out.intensities.empty()) {
+            std::reverse(scan_out.intensities.begin(), scan_out.intensities.end());
         }
 
         // 发布转换后的数据
