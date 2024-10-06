@@ -2,6 +2,7 @@
 #include <sensor_msgs/LaserScan.h>  // 包含激光扫描消息类型的头文件
 #include <vector>  // 包含vector容器
 #include <cmath>  // 包含数学函数
+#include <algorithm>  // 包含算法函数
 
 class ScanFilter {
 public:
@@ -30,28 +31,17 @@ public:
 
     // 激光扫描回调函数
     void scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan_msg) {
-        ROS_INFO("Received scan with %zu points", scan_msg->ranges.size());
-        
-        sensor_msgs::LaserScan filtered_scan = *scan_msg;  // 复制原始扫描消息
+        sensor_msgs::LaserScan filtered_scan = *scan_msg;
+        std::vector<float>& ranges = filtered_scan.ranges;
 
-        // 遍历所有激光点
         for (size_t i = 0; i < scan_msg->ranges.size(); ++i) {
-            // 计算当前激光点的角度
             float angle = scan_msg->angle_min + i * scan_msg->angle_increment;
-            angle = normalizeAngle(angle);  // 将角度归一化到[-π, π]范围
+            angle = normalizeAngle(angle);
 
-            bool in_range = false;
-            // 检查当前角度是否在任何指定的角度范围内
-            for (const auto& range : angle_ranges_) {
-                if (isAngleInRange(angle, range.first, range.second)) {
-                    in_range = true;
-                    break;
-                }
-            }
+            bool in_range = isAngleInRanges(angle);
 
-            // 如果角度不在指定范围内，或距离不在指定范围内，将该点设为无效
             if (!in_range || scan_msg->ranges[i] < min_range_ || scan_msg->ranges[i] > max_range_) {
-                filtered_scan.ranges[i] = std::numeric_limits<float>::infinity();
+                ranges[i] = std::numeric_limits<float>::infinity();
             }
         }
 
@@ -75,6 +65,15 @@ private:
     }
 
     // 检查给定角度是否在指定的范围内
+    bool isAngleInRanges(double angle) {
+        for (const auto& range : angle_ranges_) {
+            if (isAngleInRange(angle, range.first, range.second)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     bool isAngleInRange(double angle, double start, double end) {
         angle = normalizeAngle(angle);
         start = normalizeAngle(start);
@@ -83,7 +82,6 @@ private:
         if (start <= end) {
             return angle >= start && angle <= end;
         } else {
-            // 处理跨越0/2π的情况
             return angle >= start || angle <= end;
         }
     }
