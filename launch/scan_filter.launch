@@ -1,0 +1,11 @@
+<launch>
+    <!-- 启动 scan_filter 节点 -->
+    <node pkg="amr_laser_filters" type="scan_filter" name="laser_filter" output="screen">
+        <!-- 加载YAML配置文件 -->
+        <rosparam file="$(find amr_laser_filters)/config/laser_filter.yaml" />
+        <!-- 将节点的"scan"话题重映射到全局的"/scan"话题 -->
+        <remap from="scan" to="/scan"/> <!-- 原始激光雷达数据话题 -->
+        <!-- 将节点的"scan_filtered"话题重映射到全局的"/filtered_scan"话题 -->
+        <remap from="scan_filtered" to="/filtered_scan"/> <!-- 过滤后的激光雷达数据 -->
+    </node>
+</launch>
