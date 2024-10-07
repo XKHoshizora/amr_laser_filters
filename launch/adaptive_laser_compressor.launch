@@ -1,0 +1,11 @@
+<launch>
+    <!-- 启动自适应激光数据压缩器节点 -->
+    <node pkg="amr_laser_filters" type="adaptive_laser_compressor" name="adaptive_laser_compressor" output="screen">
+        <!-- 设置最大输出数据点数量 -->
+        <param name="max_output_points" value="1440" />
+        
+        <!-- 重映射话题 -->
+        <remap from="/scan" to="/scan" />
+        <remap from="/compressed_scan" to="/compressed_scan" />
+    </node>
+</launch>

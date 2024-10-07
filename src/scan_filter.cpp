@@ -52,9 +52,9 @@ public:
             // 判断该角度是否在指定的有效角度范围内
             bool in_range = isAngleInRanges(angle);
 
-            // 如果该数据点的角度不在有效范围内，或距离不在 [min_range_, max_range_] 范围内，
+            // 如果该数据点的角度在无效范围内，或距离不在 [min_range_, max_range_] 范围内，
             // 则将该数据点的距离值设置为 infinity，表示无效
-            if (!in_range || scan_msg->ranges[i] < min_range_ || scan_msg->ranges[i] > max_range_) {
+            if (in_range || scan_msg->ranges[i] < min_range_ || scan_msg->ranges[i] > max_range_) {
                 ranges[i] = std::numeric_limits<float>::infinity();  // 设置为无效值
             }
         }
