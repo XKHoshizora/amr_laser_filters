@@ -1,5 +1,5 @@
 <launch>
-    <!-- 启动 scan_filter 节点 -->
+    <!-- 启动激光雷达扫描点角度滤波器节点 -->
     <node pkg="amr_laser_filters" type="scan_filter" name="laser_filter" output="screen">
         <!-- 加载YAML配置文件 -->
         <rosparam file="$(find amr_laser_filters)/config/laser_filter.yaml" />

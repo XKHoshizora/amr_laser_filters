@@ -131,6 +131,7 @@ include_directories(
 # add_executable(${PROJECT_NAME}_node src/amr_laser_filters_node.cpp)
 add_executable(scan_filter src/scan_filter.cpp)
 add_executable(adaptive_laser_compressor src/adaptive_laser_compressor.cpp)
+add_executable(laser_median_filter src/laser_median_filter.cpp)
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
@@ -138,6 +139,7 @@ add_executable(adaptive_laser_compressor src/adaptive_laser_compressor.cpp)
 # add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(scan_filter ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(adaptive_laser_compressor ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(laser_median_filter ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -159,7 +161,9 @@ target_link_libraries(scan_filter
 target_link_libraries(adaptive_laser_compressor
   ${catkin_LIBRARIES}
 )
-
+target_link_libraries(laser_median_filter
+  ${catkin_LIBRARIES}
+)
 #############
 ## Install ##
 #############

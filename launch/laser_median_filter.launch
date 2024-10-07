@@ -1,0 +1,26 @@
+<launch>
+    <!-- 启动激光雷达中值滤波器节点 -->
+    <node pkg="amr_laser_filters" type="laser_median_filter" name="laser_median_filter" output="screen">
+        <!-- 配置滤波器参数 -->
+        <!-- 设置滑动窗口大小，这里使用5个数据点 -->
+        <param name="window_size" value="5"/>
+        
+        <!-- 设置激光测距的有效范围 -->
+        <!-- 最大有效距离设为30米 -->
+        <param name="max_range" value="30.0"/>
+        <!-- 最小有效距离设为0.05米，过滤掉非常近的点 -->
+        <param name="min_range" value="0.05"/>
+        
+        <!-- 设置激光扫描的有效角度范围（单位：弧度） -->
+        <!-- 最大角度设为pi（3.14弧度，即180度） -->
+        <param name="max_angle" value="3.14"/>
+        <!-- 最小角度设为-pi（-3.14弧度，即-180度） -->
+        <param name="min_angle" value="-3.14"/>
+
+        <!-- 话题重映射 -->
+        <!-- 将节点的输入话题 "/scan" 映射到实际的激光扫描数据话题 "/scan" -->
+        <remap from="/scan" to="/scan"/>
+        <!-- 将节点的输出话题 "/median_scan" 映射到 "/median_scan"，发布过滤后的数据 -->
+        <remap from="/median_scan" to="/median_scan"/>
+    </node>
+</launch>
