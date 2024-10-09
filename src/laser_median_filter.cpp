@@ -12,8 +12,6 @@ public:
         nh_.param("window_size", window_size_, 5);
         nh_.param("max_range", max_range_, 100.0);
         nh_.param("min_range", min_range_, 0.1);
-        nh_.param("max_angle", max_angle_, M_PI);
-        nh_.param("min_angle", min_angle_, -M_PI);
         
         // 创建发布者和订阅者
         scan_sub_ = nh_.subscribe("/scan", 1, &MedianFilterNode::scanCallback, this);
@@ -25,25 +23,24 @@ private:
     {
         sensor_msgs::LaserScan filtered_scan = *scan_msg;
         std::vector<float> filtered_ranges;
-        
+
         for (size_t i = 0; i < scan_msg->ranges.size(); ++i)
         {
             std::vector<float> window;
-            
+
             // 收集窗口内的有效测量值
             for (int j = -window_size_/2; j <= window_size_/2; ++j)
             {
                 int index = (i + j + scan_msg->ranges.size()) % scan_msg->ranges.size();
                 float range = scan_msg->ranges[index];
-                float angle = scan_msg->angle_min + index * scan_msg->angle_increment;
-                
-                if (range >= min_range_ && range <= max_range_ &&
-                    angle >= min_angle_ && angle <= max_angle_)
+
+                // 仅对距离范围进行过滤
+                if (range >= min_range_ && range <= max_range_)
                 {
                     window.push_back(range);
                 }
             }
-            
+
             if (!window.empty())
             {
                 // 计算中值
@@ -56,7 +53,7 @@ private:
                 filtered_ranges.push_back(scan_msg->ranges[i]);
             }
         }
-        
+
         filtered_scan.ranges = filtered_ranges;
         scan_pub_.publish(filtered_scan);
     }
@@ -67,8 +64,6 @@ private:
     int window_size_;
     double max_range_;
     double min_range_;
-    double max_angle_;
-    double min_angle_;
 };
 
 int main(int argc, char** argv)
