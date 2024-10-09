@@ -57,6 +57,9 @@ public:
             if (in_range || scan_msg->ranges[i] < min_range_ || scan_msg->ranges[i] > max_range_) {
                 ranges[i] = std::numeric_limits<float>::infinity();  // 设置为无效值
             }
+
+            // 添加调试输出
+            ROS_DEBUG("Angle: %f, In Range: %d, Distance: %f", angle, in_range, scan_msg->ranges[i]);
         }
 
         // 发布过滤后的激光扫描数据

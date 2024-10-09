@@ -75,6 +75,12 @@ class AdaptiveLaserCompressor {
             scan_msg->scan_time *
             (static_cast<float>(actual_output_points) / input_points);
 
+        // 检查压缩后的点数是否为零
+        if (actual_output_points == 0) {
+            ROS_WARN("Compressed scan has zero points. Skipping publication.");
+            return;
+        }
+
         // 发布压缩后的激光扫描消息
         pub_.publish(compressed_scan);
 
