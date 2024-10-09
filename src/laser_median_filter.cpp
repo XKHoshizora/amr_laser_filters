@@ -10,8 +10,8 @@ public:
     {
         // 从参数服务器获取参数
         nh_.param("window_size", window_size_, 5);
-        nh_.param("max_range", max_range_, 100.0);
-        nh_.param("min_range", min_range_, 0.1);
+        nh_.param("max_range", max_range_, 30.0);
+        nh_.param("min_range", min_range_, 0.05);
         
         // 创建发布者和订阅者
         scan_sub_ = nh_.subscribe("/scan", 1, &MedianFilterNode::scanCallback, this);
